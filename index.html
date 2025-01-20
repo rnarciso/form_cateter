@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Inserção de Cateter Venoso Central</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #00ffff;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="datetime-local"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .catheter-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .puncture-site {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .complications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .complications-table th, .complications-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .grau-info {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .grau-info h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .grau-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .grau-info li {
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .femoral-justification {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        .site-selections {
+            margin-bottom: 15px;
+        }
+        .laterality-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>INSERÇÃO DE CATETER VENOSO CENTRAL</h1>
+    </div>
+    <form id="cvcForm">
+        <!-- Novo bloco para informações do cateter -->
+        <div class="catheter-info">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="catheterType">Tipo de Cateter:</label>
+                    <select id="catheterType" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="cvc">CVC (Cateter Venoso Central)</option>
+                        <option value="picc">PICC (Cateter Central de Inserção Periférica)</option>
+                        <option value="hemodialitico">Cateter de Hemodiálise</option>
+                        <option value="port">Port-a-Cath (Porto de Acesso Venoso)</option>
+                        <option value="hickman">Hickman/Broviac</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lumensNumber">Número de Lúmens:</label>
+                    <input type="number" id="lumensNumber" min="1" max="7" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="startTime">Início do procedimento:</label>
+                <input type="datetime-local" id="startTime" required>
+            </div>
+            <div class="form-group">
+                <label for="endTime">Término do procedimento:</label>
+                <input type="datetime-local" id="endTime" required>
+            </div>
+        </div>
+
+        <div class="puncture-site">
+            <div class="site-selections">
+                <label>Sítio de Punção:</label>
+                <div class="radio-group">
+                    <input type="radio" name="punctureSite" value="jugular" id="jugular" required>
+                    <label for="jugular">Veia Jugular</label>
+                    
+                    <input type="radio" name="punctureSite" value="subclavia" id="subclavia">
+                    <label for="subclavia">Veia Subclávia</label>
+                    
+                    <input type="radio" name="punctureSite" value="femoral" id="femoral">
+                    <label for="femoral">Veia Femoral</label>
+                </div>
+            </div>
+            <div class="laterality-section">
+                <label>Lateralidade:</label>
+                <div class="radio-group">
+                    <input type="radio" name="laterality" value="direita" id="rightSide" required>
+                    <label for="rightSide">Direita</label>
+                    
+                    <input type="radio" name="laterality" value="esquerda" id="leftSide">
+                    <label for="leftSide">Esquerda</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Novo campo para verificação de raio X -->
+        <div id="xrayCheckSection" class="form-group" style="display: none;">
+            <label>Solicitada radiografia de tórax após término do procedimento?</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="xrayCheck" value="nao"> Não
+                </label>
+                <label>
+                    <input type="radio" name="xrayCheck" value="sim"> Sim
+                </label>
+            </div>
+        </div>
+
+        <div id="femoralJustificationSection" class="femoral-justification">
+            <label for="femoralJustification">Justificativa para Acesso Femoral (OBRIGATÓRIO):</label>
+            <textarea id="femoralJustification" rows="6" placeholder="Descreva detalhadamente a justificativa para utilização do acesso femoral. Inclua:
+- Tentativas prévias em outros sítios
+- Contraindicações específicas para outros acessos
+- Condições anatômicas especiais
+- Urgência/emergência que justifique
+- Avaliação do risco de infecção
+- Plano para mudança do acesso assim que possível"></textarea>
+        </div>
+
+        <!-- Resto do formulário permanece igual -->
+        <div class="form-group">
+            <label>Condição:</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="condition" value="eletiva" required> Eletiva
+                </label>
+                <label>
+                    <input type="radio" name="condition" value="urgencia"> Urgência
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Utilização de Ultrassom:</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="ultrasound" value="nao" required> Não
+                </label>
+                <label>
+                    <input type="radio" name="ultrasound" value="sim"> Sim
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Sucesso na inserção do CVC:</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="success" value="nao" required> Não
+                </label>
+                <label>
+                    <input type="radio" name="success" value="sim"> Sim
+                </label>
+            </div>
+        </div>
+
+        <table class="complications-table">
+            <thead>
+                <tr>
+                    <th>Complicações associadas à inserção do CVC</th>
+                    <th>Não</th>
+                    <th>Sim</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Punção arterial</td>
+                    <td><input type="radio" name="puncture" value="nao" required></td>
+                    <td><input type="radio" name="puncture" value="sim"></td>
+                </tr>
+                <tr>
+                    <td>Pneumotórax</td>
+                    <td><input type="radio" name="pneumothorax" value="nao" required></td>
+                    <td><input type="radio" name="pneumothorax" value="sim"></td>
+                </tr>
+                <tr>
+                    <td>Hemotórax</td>
+                    <td><input type="radio" name="hemothorax" value="nao" required></td>
+                    <td><input type="radio" name="hemothorax" value="sim"></td>
+                </tr>
+                <tr>
+                    <td>Sangramento</td>
+                    <td><input type="radio" name="bleeding" value="nao" required></td>
+                    <td><input type="radio" name="bleeding" value="sim"></td>
+                </tr>
+                <tr>
+                    <td>Arritmia maligna</td>
+                    <td><input type="radio" name="arrhythmia" value="nao" required></td>
+                    <td><input type="radio" name="arrhythmia" value="sim"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Grau do Sangramento -->
+        <div id="grauSangramentoDiv" class="grau-info" style="display: none;">
+            <h3>Grau do Sangramento:</h3>
+            <div class="radio-group">
+                <label><input type="radio" name="grauSangramento" value="grau1"> Grau 1</label>
+                <label><input type="radio" name="grauSangramento" value="grau2"> Grau 2</label>
+                <label><input type="radio" name="grauSangramento" value="grau3"> Grau 3</label>
+                <label><input type="radio" name="grauSangramento" value="grau4"> Grau 4</label>
+            </div>
+            <ul>
+                <li><strong>Grau 1:</strong> Sangramento pequeno que não necessitou de intervenção</li>
+                <li><strong>Grau 2:</strong> Sangramento que necessitou de compressão externa</li>
+                <li><strong>Grau 3:</strong> Sangramento que demandou intervenção invasiva ou transfusão de sangue</li>
+                <li><strong>Grau 4:</strong> Sangramentos com risco de vida</li>
+            </ul>
+        </div>
+
+        <!-- Grau da Arritmia -->
+        <div id="grauArritmiaDiv" class="grau-info" style="display: none;">
+            <h3>Grau da Arritmia:</h3>
+            <div class="radio-group">
+                <label><input type="radio" name="grauArritmia" value="grau1"> Grau 1</label>
+                <label><input type="radio" name="grauArritmia" value="grau2"> Grau 2</label>
+                <label><input type="radio" name="grauArritmia" value="grau3"> Grau 3</label>
+            </div>
+            <ul>
+                <li><strong>Grau 1:</strong> Assintomática ou sintomático leve. Não necessitou de intervenção ou necessitou intervenção mínima, não invasiva.</li>
+                <li><strong>Grau 2:</strong> Sintomático, demandou intervenção médica urgente como cardioversão elétrica ou química, desfibrilação, antiarrítmicos.</li>
+                <li><strong>Grau 3:</strong> Arritmia ameaçadora à vida.</li>
+            </ul>
+        </div>
+
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Salvar Registro
+        </button>
+    </form>
+
+    <script>
+        // Função para mostrar/esconder justificativa femoral e verificação de raio X
+        document.querySelectorAll('input[name="punctureSite"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const femoralJustification = document.getElementById('femoralJustificationSection');
+                const xrayCheck = document.getElementById('xrayCheckSection');
+                
+                // Gerencia seção de justificativa femoral
+                if (this.value === 'femoral') {
+                    femoralJustification.style.display = 'block';
+                    document.getElementById('femoralJustification').required = true;
+                    xrayCheck.style.display = 'none';
+                    document.querySelectorAll('input[name="xrayCheck"]').forEach(radio => radio.required = false);
+                } else {
+                    femoralJustification.style.display = 'none';
+                    document.getElementById('femoralJustification').required = false;
+                    xrayCheck.style.display = 'block';
+                    document.querySelectorAll('input[name="xrayCheck"]').forEach(radio => radio.required = true);
+                }
+            });
+        });
+
+        // Mostra/esconde graus de complicações conforme seleção
+        document.querySelector('input[name="bleeding"][value="sim"]').addEventListener('change', function() {
+            document.getElementById('grauSangramentoDiv').style.display = 'block';
+            document.getElementsByName('grauSangramento').forEach(radio => radio.required = true);
+        });
+
+        document.querySelector('input[name="bleeding"][value="nao"]').addEventListener('change', function() {
+            document.getElementById('grauSangramentoDiv').style.display = 'none';
+            document.getElementsByName('grauSangramento').forEach(radio => radio.required = false);
+        });
+
+        document.querySelector('input[name="arrhythmia"][value="sim"]').addEventListener('change', function() {
+            document.getElementById('grauArritmiaDiv').style.display = 'block';
+            document.getElementsByName('grauArritmia').forEach(radio => radio.required = true);
+        });
+
+        document.querySelector('input[name="arrhythmia"][value="nao"]').addEventListener('change', function() {
+            document.getElementById('grauArritmiaDiv').style.display = 'none';
+            document.getElementsByName('grauArritmia').forEach(radio => radio.required = false);
+        });
+
+        // Função para validar a justificativa do acesso femoral
+        function validateFemoralJustification(justification) {
+            // Verifica comprimento mínimo (30 caracteres)
+            if (justification.length < 30) {
+                return {
+                    isValid: false,
+                    message: "A justificativa deve conter uma explicação mínima da indicação."
+                };
+            }
+
+            // Lista de aspectos - pelo menos UM desses grupos deve estar presente
+            const requiredAspects = [
+                {
+                    keywords: ['trombo', 'us', 'ultrassom', 'eco', 'cervical', 'jugular', 'subclávia', 'anatomia'],
+                    description: 'condição anatômica/exame de imagem'
+                },
+                {
+                    keywords: ['urgência', 'emergência', 'emergencial', 'risco', 'grave', 'instável', 'crítico'],
+                    description: 'contexto de urgência'
+                },
+                {
+                    keywords: ['plano', 'programa', 'previsão', 'mudar', 'mudança', 'troca', 'trocar', 'nova', 'novo', 'semana'],
+                    description: 'plano de troca'
+                }
+            ];
+
+            // Verifica presença de pelo menos um aspecto importante
+            const presentAspects = requiredAspects.filter(aspect => 
+                aspect.keywords.some(keyword => 
+                    justification.toLowerCase().includes(keyword.toLowerCase())
+                )
+            );
+
+            if (presentAspects.length < 2) {
+                return {
+                    isValid: false,
+                    message: `A justificativa deve incluir pelo menos dois dos seguintes aspectos:\n- Condição anatômica ou exame de imagem\n- Contexto de urgência\n- Plano de troca`
+                };
+            }
+
+            return {
+                isValid: true,
+                message: "Justificativa adequada."
+            };
+        }
+
+        // Validação do formulário
+        document.getElementById('cvcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const punctureSite = document.querySelector('input[name="punctureSite"]:checked').value;
+            
+            if (punctureSite === 'femoral') {
+                const justification = document.getElementById('femoralJustification').value.trim();
+                const validationResult = validateFemoralJustification(justification);
+                
+                if (!validationResult.isValid) {
+                    alert(validationResult.message);
+                    return;
+                }
+            } else {
+                const xrayChecked = document.querySelector('input[name="xrayCheck"]:checked');
+                if (!xrayChecked) {
+                    alert('Por favor, indique se foi solicitada radiografia de tórax após o procedimento.');
+                    return;
+                }
+            }
+
+            // Coleta os dados do formulário
+            const formData = {
+                cateter: {
+                    tipo: document.getElementById('catheterType').value,
+                    numLumens: document.getElementById('lumensNumber').value
+                },
+                procedimento: {
+                    inicio: document.getElementById('startTime').value,
+                    termino: document.getElementById('endTime').value
+                },
+                sitio: {
+                    local: document.querySelector('input[name="punctureSite"]:checked').value,
+                    lateralidade: document.querySelector('input[name="laterality"]:checked').value
+                },
+                condicao: document.querySelector('input[name="condition"]:checked').value,
+                ultrassom: document.querySelector('input[name="ultrasound"]:checked').value,
+                sucesso: document.querySelector('input[name="success"]:checked').value,
+                complicacoes: {
+                    puncaoArterial: document.querySelector('input[name="puncture"]:checked').value,
+                    pneumotorax: document.querySelector('input[name="pneumothorax"]:checked').value,
+                    hemotorax: document.querySelector('input[name="hemothorax"]:checked').value,
+                    sangramento: document.querySelector('input[name="bleeding"]:checked').value,
+                    arritmia: document.querySelector('input[name="arrhythmia"]:checked').value
+                }
+            };
+
+            // Adiciona campos condicionais
+            if (formData.sitio.local === 'femoral') {
+                formData.justificativaFemoral = document.getElementById('femoralJustification').value;
+            } else {
+                formData.raioX = document.querySelector('input[name="xrayCheck"]:checked')?.value;
+            }
+
+            // Adiciona graus de complicações se aplicável
+            if (formData.complicacoes.sangramento === 'sim') {
+                formData.complicacoes.grauSangramento = document.querySelector('input[name="grauSangramento"]:checked')?.value;
+            }
+            
+            if (formData.complicacoes.arritmia === 'sim') {
+                formData.complicacoes.grauArritmia = document.querySelector('input[name="grauArritmia"]:checked')?.value;
+            }
+
+            // Exibe o JSON no console
+            console.log('Dados do formulário:');
+            alert(JSON.stringify(formData, null, 2));
+        });
+
+        // Adiciona validação em tempo real para a justificativa
+        document.getElementById('femoralJustification').addEventListener('input', function() {
+            const justification = this.value.trim();
+            const validationResult = validateFemoralJustification(justification);
+            
+            // Atualiza feedback visual
+            this.style.borderColor = validationResult.isValid ? '#28a745' : '#dc3545';
+            
+            // Se quiser mostrar a mensagem em tempo real, pode adicionar um elemento para isso
+            const feedbackDiv = document.getElementById('justificationFeedback') || 
+                              (() => {
+                                  const div = document.createElement('div');
+                                  div.id = 'justificationFeedback';
+                                  div.style.fontSize = '0.875em';
+                                  div.style.marginTop = '5px';
+                                  this.parentNode.appendChild(div);
+                                  return div;
+                              })();
+            
+            feedbackDiv.style.color = validationResult.isValid ? '#28a745' : '#dc3545';
+            feedbackDiv.textContent = validationResult.message;
+        });
+    </script>
+</body>
+</html>
