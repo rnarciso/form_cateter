@@ -1,0 +1,209 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { AlertCircle } from 'lucide-react';
+
+const SNEForm = () => {
+  const [contraIndicacoes, setContraIndicacoes] = useState([]);
+  const [indicacoesPosicionamento, setIndicacoesPosicionamento] = useState([]);
+  const [fatoresRisco, setFatoresRisco] = useState([]);
+  const [prioridade, setPrioridade] = useState('');
+  const [notificarEMTN, setNotificarEMTN] = useState(false);
+  
+  const contraindicacoesAbsolutas = [
+    'Vômitos incoercíveis e/ou diarreia grave persistente',
+    'Obstrução intestinal completa',
+    'Inviabilidade de acesso ao intestino',
+    'Fístula intestinal baixa de alto débito',
+    'Laringectomia',
+    'Fraturas de face',
+    'Cirurgias esofágicas nos últimos 15 dias',
+    'Trauma de base de crânio',
+    'Fístulas nasais',
+    'Cirurgias nasais',
+    'Traumatismo craniano com fratura da placa cribiforme do osso frontal'
+  ];
+
+  const indicacoesPosicionamentoList = [
+    'Gastroparesia',
+    'Hérnia de hiato de grande extensão',
+    'Dependência de ventilação não-invasiva (VNI)',
+    'Refluxo gastroesofágico em neonatos',
+    'Refluxo gastroesofágico moderado/grave em adultos e pediátricos',
+    'Malformação do trato digestivo alto em neonatos',
+    'Vômitos em nutrição plena por sonda gástrica sem via oral (neonatos)'
+  ];
+
+  const fatoresRiscoList = [
+    'Presença de hérnia de hiato',
+    'Presença de divertículo de Zenker (esofágico)',
+    'Lesão extensa de mucosa oral ou nasal',
+    'Cirurgia esofágica há mais de 15 dias',
+    'Plaquetas < 30 x 10³ (exceto com transfusão pré-procedimento)',
+    'INR > 2',
+    'Anticoagulantes em doses terapêuticas sistêmicas plenas',
+    'Cirurgia transesfenoidal recente',
+    'Varizes esofágicas',
+    'Presença de obstrução mecânica do TGI',
+    'Fístula traqueo-esofágica',
+    'Cirurgia bariátrica nos últimos 3 meses'
+  ];
+
+  const avaliarNecessidadeEndoscopia = () => {
+    if (contraIndicacoes.length > 0) {
+      return { permitido: false, mensagem: 'Procedimento contraindicado devido à presença de contraindicações absolutas.' };
+    }
+    
+    if (indicacoesPosicionamento.length > 0) {
+      return { permitido: true, endoscopia: true, mensagem: 'Passagem com auxílio de endoscopia recomendada devido às indicações de posicionamento.' };
+    }
+    
+    if (fatoresRisco.length >= 1) {
+      return { permitido: true, endoscopia: true, mensagem: 'Passagem com auxílio de endoscopia recomendada devido à presença de fator(es) de risco.' };
+    }
+    
+    return { permitido: true, endoscopia: false, mensagem: 'Passagem às cegas pode ser realizada pela enfermagem.' };
+  };
+
+  const resultado = avaliarNecessidadeEndoscopia();
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-4 p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-center">
+            Avaliação para Passagem de Sonda Nasoenteral
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <section className="space-y-2">
+              <h3 className="font-semibold">Contraindicações Absolutas</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {contraindicacoesAbsolutas.map((item, index) => (
+                  <label key={index} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={contraIndicacoes.includes(item)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setContraIndicacoes([...contraIndicacoes, item]);
+                        } else {
+                          setContraIndicacoes(contraIndicacoes.filter(i => i !== item));
+                        }
+                      }}
+                      className="form-checkbox"
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Indicações de Posicionamento Pós-Pilórico</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {indicacoesPosicionamentoList.map((item, index) => (
+                  <label key={index} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={indicacoesPosicionamento.includes(item)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setIndicacoesPosicionamento([...indicacoesPosicionamento, item]);
+                        } else {
+                          setIndicacoesPosicionamento(indicacoesPosicionamento.filter(i => i !== item));
+                        }
+                      }}
+                      className="form-checkbox"
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Fatores de Risco</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {fatoresRiscoList.map((item, index) => (
+                  <label key={index} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={fatoresRisco.includes(item)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setFatoresRisco([...fatoresRisco, item]);
+                        } else {
+                          setFatoresRisco(fatoresRisco.filter(i => i !== item));
+                        }
+                      }}
+                      className="form-checkbox"
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Prioridade</h3>
+              <div className="flex space-x-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="prioridade"
+                    value="urgente"
+                    checked={prioridade === 'urgente'}
+                    onChange={(e) => setPrioridade(e.target.value)}
+                    className="form-radio"
+                  />
+                  <span>Urgente</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="prioridade"
+                    value="rotina"
+                    checked={prioridade === 'rotina'}
+                    onChange={(e) => setPrioridade(e.target.value)}
+                    className="form-radio"
+                  />
+                  <span>Rotina</span>
+                </label>
+              </div>
+            </section>
+
+            <section className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={notificarEMTN}
+                  onChange={(e) => setNotificarEMTN(e.target.checked)}
+                  className="form-checkbox"
+                />
+                <span>Notificar Equipe Multiprofissional de Terapia Nutricional (EMTN)</span>
+              </label>
+            </section>
+
+            <section className="mt-6 p-4 rounded-lg border bg-blue-50">
+              <div className="flex items-start space-x-2">
+                <AlertCircle className="w-5 h-5 text-blue-500 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold">Conclusão da Avaliação:</h3>
+                  <p className="mt-1">{resultado.mensagem}</p>
+                  {resultado.permitido && (
+                    <p className="mt-2 font-medium">
+                      Método recomendado: {resultado.endoscopia ? 'Passagem com auxílio de endoscopia' : 'Passagem às cegas pela enfermagem'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default SNEForm;
