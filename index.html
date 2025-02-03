@@ -218,6 +218,12 @@
             </div>
         </div>
 
+        <!-- Novo campo de tentativas de punção -->
+        <div class="form-group">
+            <label for="attempts">Número total de tentativas de punção venosa:</label>
+            <input type="number" id="attempts" name="attempts" min="1" required>
+        </div>
+
         <div class="form-group">
             <label>Sucesso na inserção do CVC:</label>
             <div class="radio-group">
@@ -431,6 +437,7 @@
                 },
                 condicao: document.querySelector('input[name="condition"]:checked').value,
                 ultrassom: document.querySelector('input[name="ultrasound"]:checked').value,
+                tentativasPuncao: document.getElementById('attempts').value,
                 sucesso: document.querySelector('input[name="success"]:checked').value,
                 complicacoes: {
                     puncaoArterial: document.querySelector('input[name="puncture"]:checked').value,
